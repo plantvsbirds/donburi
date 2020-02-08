@@ -1,61 +1,52 @@
 import React from 'react';
 import { useEffect, useRef, useState } from 'react'
-import cytoscape from 'cytoscape'
 
+import vis from 'vis-network'
+
+const Tx = ({data}) => {
+  return (
+    <p>
+      {JSON.stringify(data)}
+    </p>
+  )
+}
 const App = () => {
   const [selectedElm, selectElm] = useState(null)
-  const Graph = useRef(null)
+  const graphObject = useRef(null)
+  const graphElem = useRef(null)
+
   useEffect(() => {
-    var toJson = function(res){ return res.json(); };
-    Graph.current = cytoscape({
-      container: document.getElementById('cy'),
-      style: [{
-        "selector": "node",
-        "style": {
-          "text-valign": "center",
-          "text-halign": "bottom",
-          "background-color": "#4299e1",
-          "width": 64,
-          "height": 64
-        }
-      }, {
-        "selector": "node[label]",
-        "style": {
-          "color": "#fff",
-          "label": "data(label)"
-        }
-      }, {
-        "selector": "edge",
-        "style": {
-          "width": 3,
-          "curve-style": "straight"
-        }
-      }, {
-        "selector": "edge[arrow]",
-        "style": {
-          "target-arrow-shape": "data(arrow)"
-        }
-      }, {
-        "selector": "edge.hollow",
-        "style": {
-          "target-arrow-fill": "hollow"
-        }
-      }],
-      elements: [
-        { "data": { "id": "n0", "label": "triangle" } },
-        { "data": { "id": "n1" } },
-        { "data": { "id": "e0", "source": "n0", "target": "n1", "arrow": "triangle" } }
-      ],
-      minZoom: 1,
-      maxZoom: 1.2
-    });
-    Graph.current.elements("node, edge").on('select', ({target}) => {
-      selectElm(target.data())
-    })
-  })
-  useEffect(() => {
+    var nodes = new vis.DataSet([
+      { id: 1, label: "Node 1" },
+      { id: 2, label: "Node 2" },
+      { id: 3, label: "Node 3" },
+      { id: 4, label: "Node 4" },
+      { id: 5, label: "Node 5" }
+    ]);
     
-  })
+    // create an array with edges
+    var edges = new vis.DataSet([
+      { from: 1, to: 3 },
+      { from: 1, to: 2 },
+      { from: 2, to: 4 },
+      { from: 2, to: 5 },
+      { from: 3, to: 3 }
+    ]);
+
+    graphObject.current = new vis.Network(graphElem.current, {
+      nodes: nodes,
+      edges: edges
+    }, {
+      layout: {
+        hierarchical: {
+          enabled: true
+        }
+      }
+    })
+    graphObject.current.on('select', (sth) => {
+      selectElm(sth)
+    })
+  }, [])
   return (
     <div>
       <ul className="bg-gray-200 flex main-nav border-b user-nav">
@@ -116,10 +107,10 @@ const App = () => {
           </a>
         </li>
       </ul>
-      <div  className="mx-auto h-screen flex flex-row">
-        <div id="cy" className="h-full flex-1"></div>
-        <div className="flex-1">
-          {JSON.stringify(selectedElm)}
+      <div  className="mx-auto h-screen flex flex-row justify-start container">
+        <div ref={graphElem} className="h-full w-3/5"></div>
+        <div className="w-2/5">
+          <Tx data={selectedElm} />
         </div>
       </div>
     </div>
