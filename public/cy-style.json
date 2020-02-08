@@ -1,0 +1,32 @@
+[{
+  "selector": "node",
+  "style": {
+    "text-valign": "center",
+    "text-halign": "bottom",
+    "background-color": "#4299e1",
+    "width": 64,
+    "height": 64
+  }
+}, {
+  "selector": "node[label]",
+  "style": {
+    "color": "#fff",
+    "label": "data(label)"
+  }
+}, {
+  "selector": "edge",
+  "style": {
+    "width": 3,
+    "curve-style": "straight"
+  }
+}, {
+  "selector": "edge[arrow]",
+  "style": {
+    "target-arrow-shape": "data(arrow)"
+  }
+}, {
+  "selector": "edge.hollow",
+  "style": {
+    "target-arrow-fill": "hollow"
+  }
+}]

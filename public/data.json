@@ -1,0 +1,5 @@
+[
+  { "data": { "id": "n0", "label": "triangle" } },
+  { "data": { "id": "n1" } },
+  { "data": { "id": "e0", "source": "n0", "target": "n1", "arrow": "triangle" } }
+]
