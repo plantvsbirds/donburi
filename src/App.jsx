@@ -5,46 +5,85 @@ import vis from 'vis-network'
 
 const Tx = ({data}) => {
   return (
-    <p>
+    <div className="break-all">
       {JSON.stringify(data)}
-    </p>
+    </div>
   )
 }
+
+const Edges = [
+  { from: 'Proposal', to: 'Pre-sale' },
+  { from: 'Pre-sale', to: 'Approval' },
+  { from: 'Pre-sale', to: 'Closed' },
+  { from: 'Approval', to: 'Sale' },
+  { from: 'Sale', to: 'Closed' }
+]
+const States = [ 'Proposal', 'Pre-sale', 'Closed', 'Approval', 'Sale' ]
+const nodeMaker = (sName) => {
+  return {
+    id: sName,
+    label: sName,
+    color: {
+      background: '#ddd',
+      hover: '#ccc'
+    },
+    shape: 'circle',
+    size: 50,
+    widthConstraint: {
+      minimum: 70,
+      maximum: 70,
+    },
+  }
+}
+var nodes = new vis.DataSet(States.map(nodeMaker));
+// create an array with edges
+var edges = new vis.DataSet(Edges);
+
+const stateLookupFromSelectEvt = (x) => x.nodes.length > 0 ? nodes.get(x.nodes[0]) : edges.get(x.edges[0])
 const App = () => {
   const [selectedElm, selectElm] = useState(null)
   const graphObject = useRef(null)
   const graphElem = useRef(null)
 
   useEffect(() => {
-    var nodes = new vis.DataSet([
-      { id: 1, label: "Node 1" },
-      { id: 2, label: "Node 2" },
-      { id: 3, label: "Node 3" },
-      { id: 4, label: "Node 4" },
-      { id: 5, label: "Node 5" }
-    ]);
-    
-    // create an array with edges
-    var edges = new vis.DataSet([
-      { from: 1, to: 3 },
-      { from: 1, to: 2 },
-      { from: 2, to: 4 },
-      { from: 2, to: 5 },
-      { from: 3, to: 3 }
-    ]);
-
     graphObject.current = new vis.Network(graphElem.current, {
-      nodes: nodes,
-      edges: edges
+      nodes,
+      edges,
     }, {
       layout: {
         hierarchical: {
-          enabled: true
+          enabled: false,
+          nodeSpacing: 300,
+          treeSpacing: 300,
+          levelSeparation: 300,
+          edgeMinimization: false,
+          blockShifting: false,
         }
+      },
+      edges: {
+        // selectionWidth: 4,
+        arrows: {
+          to: {
+            enabled: true
+          }
+        },
+        chosen: {
+          edge: (edge, id, selected, hovering) => {
+            selected && (edge.color = '#ff0')
+          }
+        },
+      },
+      interaction: {
+        selectConnectedEdges: false,
+        hoverConnectedEdges: false,
+        zoomView: false,
+        dragView: false,
+        dragNodes: false,
+        hover: true,
       }
     })
     graphObject.current.on('select', (sth) => {
-      selectElm(sth)
+      selectElm(stateLookupFromSelectEvt(sth))
     })
   }, [])
   return (
