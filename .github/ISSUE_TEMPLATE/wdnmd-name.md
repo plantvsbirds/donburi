@@ -2,7 +2,7 @@
 name: wdnmd name
 about: wdnmd about
 title: "[ALUBA TITLE]"
-labels: ''
+labels: 'erfad', 'asdasd'
 assignees: ''
 
 ---
