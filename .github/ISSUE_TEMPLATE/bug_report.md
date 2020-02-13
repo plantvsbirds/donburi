@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: documentation, duplicate, enhancement
+labels: documentation, 新文章条目, enhancement
 assignees: ''
 
 ---
