@@ -23,16 +23,6 @@ const nodeMaker = (sName) => {
   return {
     id: sName,
     label: sName,
-    color: {
-      background: '#ddd',
-      hover: '#ccc'
-    },
-    shape: 'circle',
-    size: 50,
-    widthConstraint: {
-      minimum: 70,
-      maximum: 70,
-    },
   }
 }
 var nodes = new vis.DataSet(States.map(nodeMaker));
@@ -58,6 +48,8 @@ const App = () => {
           levelSeparation: 300,
           edgeMinimization: false,
           blockShifting: false,
+          direction: 'LR',
+          shakeTowards: 'leaves'
         }
       },
       edges: {
@@ -67,9 +59,32 @@ const App = () => {
             enabled: true
           }
         },
-        chosen: {
-          edge: (edge, id, selected, hovering) => {
-            selected && (edge.color = '#ff0')
+
+        color: {
+          color:'#D2E5FF',
+          highlight:'#f00',
+          hover: '#848484',
+          inherit: 'from',
+          opacity:1.0
+        },
+      },
+      nodes: {
+        shape: 'circle',
+        size: 50,
+        widthConstraint: {
+          minimum: 70,
+          maximum: 70,
+        },
+        color: {
+          border: '#2B7CE9',
+          background: '#D2E5FF',
+          highlight: {
+            border: '#f00',
+            background: '#D2E5FF'
+          },
+          hover: {
+            border: '#2B7CE9',
+            background: '#D2E5FF'
           }
         },
       },
