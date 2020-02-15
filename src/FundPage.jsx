@@ -7,9 +7,9 @@ import db from './db.js'
 const Tx = ({data}) => {
   const Item = ({title, dat}) => {
     return (
-      <div>
-        <p className="text-m text-left text-gray-600 font-bold uppercase">
-            state name
+      <div className="my-4">
+        <p className="text-s text-left text-gray-600 font-bold uppercase">
+            tx type
         </p>
         <h1 className="text-xl">
             {dat}
@@ -22,6 +22,7 @@ const Tx = ({data}) => {
         <div className="text-xl text-center m-1 text-blue-600">
             Transaction Details
         </div>
+        {data && data.name && <Item title="state name" dat={data.name}/>}
         {data && data.name && <Item title="state name" dat={data.name}/>}
       {JSON.stringify(data)}
     </div>
@@ -38,8 +39,13 @@ var nodes = new vis.DataSet(db.States.map(nodeMaker));
 // create an array with edges
 var edges = new vis.DataSet(db.Edges);
 
-const stateLookupFromSelectEvt = (x) => x.nodes.length > 0 ? nodes.get(x.nodes[0]) : edges.get(x.edges[0])
-
+const stateLookupFromSelectEvt = (x) => {
+  if (x.nodes.length > 0)
+    return nodes.get(x.nodes[0])
+  if (x.edges.length > 0)
+    return edges.get(x.edges[0])
+  return null
+}
 
 export default () => {
     const [selectedElm, selectElm] = useState(null)
