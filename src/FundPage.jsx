@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import vis from 'vis-network'
 import db from './db.js'
 
-const Tx = ({data}) => {
+const ElementDetail = ({data}) => {
   const Item = ({title, dat}) => {
     return (
       <div className="my-4">
@@ -17,6 +17,14 @@ const Tx = ({data}) => {
       </div>
     )
   }
+
+  const displayAsItems = (data) =>
+      data && Object.keys(data)
+      .filter((k) => !(new Set(db.nativeFields).has(k)))
+      .map(dk => <Item key={dk} title={dk} dat={data[dk]}/>)
+  
+  const allTransactions = () =>
+    data && data.id && (db.txs.filter(({type}) => type[2] === data.id))
 
   if (data === null) {
     return (
@@ -32,10 +40,10 @@ const Tx = ({data}) => {
         <div className="text-xl text-center m-1 text-blue-600">
             Transaction Details
         </div>
-        {data && Object.keys(data)
-          .filter((k) => !(new Set(db.nativeFields).has(k)))
-          .map(dk => <Item title={dk} dat={data[dk]}/>)}
+        {displayAsItems(data)}
+        {allTransactions() && allTransactions().map(displayAsItems)}
       {JSON.stringify(data)}
+      {JSON.stringify(db.txs)}
     </div>
   )
 }
@@ -145,7 +153,7 @@ export default () => {
             <div ref={graphElem} className="h-full w-3/5">
             </div>
             <div className="w-2/5">
-            <Tx data={selectedElm} />
+            <ElementDetail data={selectedElm} />
             </div>
         </div>
     )
