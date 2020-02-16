@@ -29,13 +29,7 @@ const Tx = ({data}) => {
   )
 }
 
-const nodeMaker = (sName) => {
-  return {
-    id: sName,
-    label: sName,
-  }
-}
-var nodes = new vis.DataSet(db.States.map(nodeMaker));
+var nodes = new vis.DataSet(db.Nodes);
 // create an array with edges
 var edges = new vis.DataSet(db.Edges);
 
