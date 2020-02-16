@@ -9,11 +9,21 @@ const Tx = ({data}) => {
     return (
       <div className="my-4">
         <p className="text-s text-left text-gray-600 font-bold uppercase">
-            tx type
+            {title}
         </p>
         <h1 className="text-xl">
             {dat}
         </h1>
+      </div>
+    )
+  }
+
+  if (data === null) {
+    return (
+      <div className="break-all bg-gray-100 rounded p-4 m-5">
+          <div className="text-l text-left m-1 text-gray-800">
+              Tap on any state or transition to view detail
+          </div>
       </div>
     )
   }
@@ -22,8 +32,9 @@ const Tx = ({data}) => {
         <div className="text-xl text-center m-1 text-blue-600">
             Transaction Details
         </div>
-        {data && data.name && <Item title="state name" dat={data.name}/>}
-        {data && data.name && <Item title="state name" dat={data.name}/>}
+        {data && Object.keys(data)
+          .filter((k) => !(new Set(db.nativeFields).has(k)))
+          .map(dk => <Item title={dk} dat={data[dk]}/>)}
       {JSON.stringify(data)}
     </div>
   )
@@ -99,7 +110,7 @@ export default () => {
           color: {
             border: '#2B7CE9',
             background: '#D2E5FF',
-            },
+          },
           chosen: {
             node: (n, id, selected, hovering) => {
               if (hovering) {
@@ -114,8 +125,8 @@ export default () => {
                 // n.borderDashes = true
               }
             }
-            }
-          },
+          }
+        },
         interaction: {
           selectConnectedEdges: false,
           hoverConnectedEdges: false,
