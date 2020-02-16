@@ -71,19 +71,28 @@ export default () => {
         },
         edges: {
           // selectionWidth: 4,
+          width: 3,
           arrows: {
             to: {
               enabled: true
             }
           },
-  
           color: {
-            color:'#D2E5FF',
-            highlight:'#f00',
-            hover: '#848484',
-            inherit: 'from',
+            color:'#2B7CE9',
             opacity:1.0
           },
+          chosen: {
+            edge: (e, id, selected, hovering) => {
+              if (hovering) {
+                e.color = '#2b7ce9'
+                e.width = 5
+              }
+              if (selected) {
+                e.dashes = true
+                e.color = '#f00'
+              }
+            }
+          }
         },
         nodes: {
           shape: 'circle',
@@ -92,19 +101,27 @@ export default () => {
             minimum: 70,
             maximum: 70,
           },
+          borderWidth: 2,
           color: {
             border: '#2B7CE9',
             background: '#D2E5FF',
-            highlight: {
-              border: '#f00',
-              background: '#D2E5FF'
             },
-            hover: {
-              border: '#2B7CE9',
-              background: '#D2E5FF'
+          chosen: {
+            node: (n, id, selected, hovering) => {
+              if (hovering) {
+                n.background = '#D2E5FF'
+                n.border = '#2B7CE9'
+                n.borderWidth = 6
+              }
+              if (selected) {
+                n.dashes = true
+                n.background = '#D2E5FF'
+                n.borderColor = '#f00'
+                // n.borderDashes = true
+              }
+            }
             }
           },
-        },
         interaction: {
           selectConnectedEdges: false,
           hoverConnectedEdges: false,
