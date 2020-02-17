@@ -23,8 +23,8 @@ const ElementDetail = ({data}) => {
       .filter((k) => !(new Set(db.nativeFields).has(k)))
       .map(dk => <Item key={dk} title={dk} dat={data[dk]}/>)
   
-  const allTransactions = () =>
-    data && data.id && (db.txs.filter(({type}) => type[2] === data.id))
+  const transactionsRelatingToElem = () =>
+    data && data.id && (db.txs.filter(({type}) => type[2] === data.id || data['transaction type'] == type[1]))
 
   if (data === null) {
     return (
@@ -41,7 +41,12 @@ const ElementDetail = ({data}) => {
             Transaction Details
         </div>
         {displayAsItems(data)}
-        {allTransactions() && allTransactions().map(displayAsItems)}
+        {transactionsRelatingToElem() && transactionsRelatingToElem().map((tx) => {
+            return <div>
+              <hr/>
+              {displayAsItems(tx)}
+            </div>
+        })}
       {JSON.stringify(data)}
       {JSON.stringify(db.txs)}
     </div>
