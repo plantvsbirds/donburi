@@ -12,7 +12,7 @@ const ElementDetail = ({data}) => {
             {title}
         </p>
         <h1 className="text-xl">
-            {dat}
+            {JSON.stringify(dat)}
         </h1>
       </div>
     )

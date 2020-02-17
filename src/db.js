@@ -15,21 +15,21 @@ let dat = {
     }, {
         "id":"Sale"
     }],
-    Edges : [
-        { from: 'Proposal', to: 'Pre-sale', 'transaction type': 'Proposal and initial fund initialized and verified, ready for Pre-sale'},
-        { from: 'Pre-sale', to: 'Approval', 'transaction type': 'Pre-sale reached goal and submitted for approval'},
-        { from: 'Pre-sale', to: 'Closed', 'transaction type': 'Closure due to lack of interest or regulatory disapproval'},
-        { from: 'Approval', to: 'Sale', 'transaction type': 'Start of Sale due to Regulatory Approval' },
-        { from: 'Sale', to: 'Closed', 'transaction type': 'Closure'}
-    ],
     TxTypes: [
         // current, tx type name, next
         [null, 'Proposal submission', 'Proposal'],
         ['Sale', 'Add Property', 'Sale'],
+        ...([
+            { from: 'Proposal', to: 'Pre-sale', txtype: 'Proposal and initial fund initialized and verified, ready for Pre-sale'},
+            { from: 'Pre-sale', to: 'Approval', txtype: 'Pre-sale reached goal and submitted for approval'},
+            { from: 'Pre-sale', to: 'Closed', txtype: 'Closure due to lack of interest or regulatory disapproval'},
+            { from: 'Approval', to: 'Sale', txtype: 'Start of Sale due to Regulatory Approval' },
+            { from: 'Sale', to: 'Closed', txtype: 'Closure'}
+        ].map(({from, txtype, to}) => [from, txtype, to]))
     ]
 }
 
-dat.TxTypes = [...dat.TxTypes, ...dat.Edges.map(({from, to, name}) => [from, name, to])]
+
 
 dat.txs = [
     // type: [from, name, to]
@@ -72,15 +72,63 @@ const genTxs = () => {
 
 dat.txs = genTxs()
 
-dat.nativeFields = ['from', 'to', 'label', 'id', 'type']
+dat.nativeFields = ['from', 'to', 'label', 'id', 'type', 'opacity', 'color']
+
+export const hasStateBeenReached = (s) => {
+    return dat.txs.findIndex(tx => tx.type[2] === s.id) > -1
+}
+
+export const hasTxBeenReached = (_txtype) => {
+    return dat.txs.findIndex(tx => tx.type == _txtype) > -1
+}
+
+const nodeUnreachedStyle = {
+    color: {
+        border: '#ddd',
+        background: '#ddd'
+    }
+}
+
+const edgeUnreachedStyle = {
+    color: {
+        opacity: .1
+    }
+}
 
 const nodeMaker = (s) => {
-    return {
+    let ans = {
       label: s.id,
       ...s
     }
-  }
+    if (hasStateBeenReached(s)) {
+        return ans
+    } else {
+        return {
+            ...nodeUnreachedStyle,
+            ...ans
+        }
+    }
+}
 
+const edgeMaker = (tx) => {
+    const [from, txtype, to] = tx
+    let ans = {
+        from,
+        to,
+        'transaction type': txtype
+    }
+    if (hasTxBeenReached(tx)) {
+        return ans
+    } else {
+        return {
+            ...edgeUnreachedStyle,
+            ...ans
+        }
+    }
+}
+
+  
 dat.Nodes = dat.States.map(nodeMaker)
+dat.Edges = dat.TxTypes.map(edgeMaker)
 
 export default dat
